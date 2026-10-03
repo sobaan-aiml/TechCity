@@ -41,6 +41,7 @@ export const USERS: StoredUser[] = [
     email: 'rmurthy@techcity.gov',
     phone: '+91 98200 44556',
     role: 'authority',
+    authority_type: 'engineer',
     department: 'Roads & Infrastructure',
     employee_id: 'TC-ROADS-401',
     passwordHash: 'admin123',
@@ -52,6 +53,7 @@ export const USERS: StoredUser[] = [
     email: 'jkhan@techcity.gov',
     phone: '+91 98200 77889',
     role: 'authority',
+    authority_type: 'supervisor',
     department: 'Solid Waste Management',
     employee_id: 'TC-SWM-805',
     passwordHash: 'admin123',
@@ -63,11 +65,20 @@ export const USERS: StoredUser[] = [
     email: 'admin@techcity.gov',
     phone: '+91 80 2233 4455',
     role: 'authority',
+    authority_type: 'admin',
     department: 'General Municipal Administration',
     employee_id: 'TC-HQ-001',
     passwordHash: 'admin123',
     created_at: '2026-07-01T09:00:00.000Z',
   },
+];
+
+export const AVAILABLE_ENGINEERS = [
+  { id: 'user_auth_1', name: 'Engineer R. Murthy', department: 'Roads & Infrastructure', employee_id: 'TC-ROADS-401' },
+  { id: 'user_eng_2', name: 'Engineer P. Nambiar', department: 'Solid Waste Management', employee_id: 'TC-SWM-302' },
+  { id: 'user_eng_3', name: 'Engineer K. Swamy', department: 'Water Supply & Sewerage', employee_id: 'TC-WTR-204' },
+  { id: 'user_eng_4', name: 'Engineer D. Verma', department: 'Electrical & Street Lighting', employee_id: 'TC-ELEC-119' },
+  { id: 'user_eng_5', name: 'Engineer S. Patil', department: 'Stormwater Drainage', employee_id: 'TC-DRN-088' },
 ];
 
 export function authenticateUser(

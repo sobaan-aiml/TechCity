@@ -1,17 +1,19 @@
 import React from 'react';
 import {
-  Building2,
-  PlusCircle,
-  Search,
-  MapPin,
-  ShieldCheck,
   BarChart3,
-  RotateCcw,
-  User as UserIcon,
-  LogOut,
+  Briefcase,
+  Building2,
   FolderOpen,
+  HardHat,
+  LogOut,
+  MapPin,
+  PlusCircle,
+  RotateCcw,
+  Search,
+  ShieldCheck,
+  User as UserIcon,
 } from 'lucide-react';
-import { User, UserRole } from '../types/auth';
+import { User, getAuthorityType } from '../types/auth';
 
 interface NavbarProps {
   currentTab: string;
@@ -32,6 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const isCitizen = user?.role === 'citizen';
   const isAuthority = user?.role === 'authority';
+  const authorityType = user && isAuthority ? getAuthorityType(user) : 'admin';
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-xs">
@@ -42,7 +45,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="flex items-center space-x-3 cursor-pointer select-none"
             onClick={() => {
               if (isCitizen) setCurrentTab('home');
-              else if (isAuthority) setCurrentTab('admin');
+              else if (authorityType === 'engineer') setCurrentTab('engineer');
+              else if (authorityType === 'supervisor') setCurrentTab('supervisor');
+              else setCurrentTab('admin');
             }}
           >
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm ring-2 ${
@@ -58,11 +63,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                     ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
                     : 'bg-blue-50 text-blue-700 border-blue-200'
                 }`}>
-                  {isAuthority ? 'Authority Operations' : 'Citizen Portal'}
+                  {isCitizen && 'Citizen Portal'}
+                  {isAuthority && authorityType === 'engineer' && 'Field Engineer Desk'}
+                  {isAuthority && authorityType === 'supervisor' && 'Department Supervisor'}
+                  {isAuthority && authorityType === 'admin' && 'Central Operations HQ'}
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 font-medium leading-none">
-                {isAuthority ? 'Municipal Dispatch & SLA Control' : 'Unified Civic Issue Management'}
+                {isAuthority ? `${user?.department || 'Municipal HQ'}` : 'Unified Civic Issue Management'}
               </p>
             </div>
           </div>
@@ -76,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setCurrentTab('home')}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     currentTab === 'home'
-                      ? 'bg-blue-50 text-blue-700'
+                      ? 'bg-blue-50 text-blue-700 font-bold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
@@ -86,7 +94,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setCurrentTab('report')}
                   className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     currentTab === 'report'
-                      ? 'bg-blue-50 text-blue-700'
+                      ? 'bg-blue-50 text-blue-700 font-bold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
@@ -97,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setCurrentTab('track')}
                   className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     currentTab === 'track'
-                      ? 'bg-blue-50 text-blue-700'
+                      ? 'bg-blue-50 text-blue-700 font-bold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
@@ -108,7 +116,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setCurrentTab('my-reports')}
                   className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     currentTab === 'my-reports'
-                      ? 'bg-blue-50 text-blue-700 font-semibold'
+                      ? 'bg-blue-50 text-blue-700 font-bold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
@@ -119,7 +127,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setCurrentTab('map')}
                   className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     currentTab === 'map'
-                      ? 'bg-blue-50 text-blue-700'
+                      ? 'bg-blue-50 text-blue-700 font-bold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
@@ -129,19 +137,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               </>
             )}
 
-            {/* Authority Only Links */}
-            {isAuthority && (
+            {/* Engineer Links (Engineer R. Murthy) */}
+            {isAuthority && authorityType === 'engineer' && (
               <>
                 <button
-                  onClick={() => setCurrentTab('admin')}
+                  onClick={() => setCurrentTab('engineer')}
                   className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-sm font-bold transition-colors ${
-                    currentTab === 'admin'
+                    currentTab === 'engineer'
                       ? 'bg-indigo-50 text-indigo-700 shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
-                  <ShieldCheck className="w-4 h-4 text-indigo-600" />
-                  <span>Operations Dashboard</span>
+                  <HardHat className="w-4 h-4 text-blue-600" />
+                  <span>My Assigned Tasks</span>
                 </button>
                 <button
                   onClick={() => setCurrentTab('map')}
@@ -152,7 +160,63 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <MapPin className="w-4 h-4 text-emerald-600" />
-                  <span>Infrastructure Map</span>
+                  <span>Satellite Map</span>
+                </button>
+              </>
+            )}
+
+            {/* Supervisor Links (Supervisor J. Khan) */}
+            {isAuthority && authorityType === 'supervisor' && (
+              <>
+                <button
+                  onClick={() => setCurrentTab('supervisor')}
+                  className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-sm font-bold transition-colors ${
+                    currentTab === 'supervisor'
+                      ? 'bg-indigo-50 text-indigo-700 shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <Briefcase className="w-4 h-4 text-indigo-600" />
+                  <span>Department Operations</span>
+                </button>
+                <button
+                  onClick={() => setCurrentTab('map')}
+                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    currentTab === 'map'
+                      ? 'bg-indigo-50 text-indigo-700'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <MapPin className="w-4 h-4 text-emerald-600" />
+                  <span>Satellite Map</span>
+                </button>
+              </>
+            )}
+
+            {/* Admin Links (Central Operations Dispatch) */}
+            {isAuthority && authorityType === 'admin' && (
+              <>
+                <button
+                  onClick={() => setCurrentTab('admin')}
+                  className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-sm font-bold transition-colors ${
+                    currentTab === 'admin'
+                      ? 'bg-indigo-50 text-indigo-700 shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <Building2 className="w-4 h-4 text-blue-600" />
+                  <span>Control Room</span>
+                </button>
+                <button
+                  onClick={() => setCurrentTab('map')}
+                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    currentTab === 'map'
+                      ? 'bg-indigo-50 text-indigo-700'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <MapPin className="w-4 h-4 text-emerald-600" />
+                  <span>City Map</span>
                 </button>
                 <button
                   onClick={() => setCurrentTab('analytics')}
@@ -163,7 +227,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <BarChart3 className="w-4 h-4 text-amber-600" />
-                  <span>Civic Analytics</span>
+                  <span>Analytics</span>
                 </button>
               </>
             )}
@@ -255,19 +319,49 @@ export const Navbar: React.FC<NavbarProps> = ({
                   Map
                 </button>
               </>
+            ) : authorityType === 'engineer' ? (
+              <>
+                <button
+                  onClick={() => setCurrentTab('engineer')}
+                  className={`py-1 px-2 rounded-md ${currentTab === 'engineer' ? 'font-bold text-indigo-600' : 'text-slate-600'}`}
+                >
+                  My Tasks
+                </button>
+                <button
+                  onClick={() => setCurrentTab('map')}
+                  className={`py-1 px-2 rounded-md ${currentTab === 'map' ? 'font-bold text-indigo-600' : 'text-slate-600'}`}
+                >
+                  Satellite Map
+                </button>
+              </>
+            ) : authorityType === 'supervisor' ? (
+              <>
+                <button
+                  onClick={() => setCurrentTab('supervisor')}
+                  className={`py-1 px-2 rounded-md ${currentTab === 'supervisor' ? 'font-bold text-indigo-600' : 'text-slate-600'}`}
+                >
+                  Department Ops
+                </button>
+                <button
+                  onClick={() => setCurrentTab('map')}
+                  className={`py-1 px-2 rounded-md ${currentTab === 'map' ? 'font-bold text-indigo-600' : 'text-slate-600'}`}
+                >
+                  Satellite Map
+                </button>
+              </>
             ) : (
               <>
                 <button
                   onClick={() => setCurrentTab('admin')}
                   className={`py-1 px-2 rounded-md ${currentTab === 'admin' ? 'font-bold text-indigo-600' : 'text-slate-600'}`}
                 >
-                  Dashboard
+                  Control Room
                 </button>
                 <button
                   onClick={() => setCurrentTab('map')}
                   className={`py-1 px-2 rounded-md ${currentTab === 'map' ? 'font-bold text-indigo-600' : 'text-slate-600'}`}
                 >
-                  Map
+                  City Map
                 </button>
                 <button
                   onClick={() => setCurrentTab('analytics')}

@@ -78,6 +78,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
             email: 'rmurthy@techcity.gov',
             phone: '+91 98200 44556',
             role: 'authority',
+            authority_type: 'engineer',
             department: 'Roads & Infrastructure',
             employee_id: 'TC-ROADS-401',
             created_at: new Date().toISOString(),
@@ -88,6 +89,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
             email: 'jkhan@techcity.gov',
             phone: '+91 98200 77889',
             role: 'authority',
+            authority_type: 'supervisor',
             department: 'Solid Waste Management',
             employee_id: 'TC-SWM-805',
             created_at: new Date().toISOString(),
@@ -98,6 +100,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
             email: 'admin@techcity.gov',
             phone: '+91 80 2233 4455',
             role: 'authority',
+            authority_type: 'admin',
             department: 'General Municipal Administration',
             employee_id: 'TC-HQ-001',
             created_at: new Date().toISOString(),
@@ -458,8 +461,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                     </span>
                     <span className="text-[11px] text-slate-500 ml-2">Roads & Infrastructure</span>
                   </div>
-                  <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
-                    Dispatch Desk →
+                  <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                    My Assigned Tasks →
                   </span>
                 </button>
 
@@ -475,8 +478,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                     </span>
                     <span className="text-[11px] text-slate-500 ml-2">Solid Waste Management</span>
                   </div>
-                  <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
-                    Dispatch Desk →
+                  <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                    Department Operations →
                   </span>
                 </button>
 
@@ -492,7 +495,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
                     </span>
                     <span className="text-[11px] text-slate-500 ml-2">Municipal HQ Admin</span>
                   </div>
-                  <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                  <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
                     Control Room →
                   </span>
                 </button>

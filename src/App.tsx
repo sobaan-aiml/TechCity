@@ -5,11 +5,13 @@ import { CitizenReportForm } from './components/CitizenReportForm';
 import { TrackIssueView } from './components/TrackIssueView';
 import { MyReportsView } from './components/MyReportsView';
 import { CityMapView } from './components/CityMapView';
-import { AdminDashboard } from './components/AdminDashboard';
+import { EngineerDashboard } from './components/EngineerDashboard';
+import { SupervisorDashboard } from './components/SupervisorDashboard';
+import { AdminControlRoom } from './components/AdminControlRoom';
 import { AnalyticsView } from './components/AnalyticsView';
 import { AuthScreen } from './components/AuthScreen';
 import { CivicIssue } from './types/civic';
-import { User } from './types/auth';
+import { User, getAuthorityType } from './types/auth';
 import { safeFetchJson } from './utils/api';
 import { CheckCircle2, RotateCcw, ShieldAlert } from 'lucide-react';
 
@@ -30,7 +32,12 @@ export default function App() {
       const saved = localStorage.getItem('techcity_auth_user');
       if (saved) {
         const u = JSON.parse(saved);
-        return u.role === 'authority' ? 'admin' : 'home';
+        if (u.role === 'authority') {
+          const type = getAuthorityType(u);
+          if (type === 'engineer') return 'engineer';
+          if (type === 'supervisor') return 'supervisor';
+          return 'admin';
+        }
       }
     } catch {}
     return 'home';
@@ -53,8 +60,17 @@ export default function App() {
 
     // Strictly route to the correct portal based on role!
     if (user.role === 'authority') {
-      setCurrentTab('admin');
-      showToast(`Welcome, ${user.name}! Official Authority portal activated.`);
+      const type = getAuthorityType(user);
+      if (type === 'engineer') {
+        setCurrentTab('engineer');
+        showToast(`Welcome, ${user.name}! "My Assigned Tasks" dashboard activated.`);
+      } else if (type === 'supervisor') {
+        setCurrentTab('supervisor');
+        showToast(`Welcome, ${user.name}! "Department Operations" dashboard activated.`);
+      } else {
+        setCurrentTab('admin');
+        showToast(`Welcome, ${user.name}! "Central Operations Control Room" activated.`);
+      }
     } else {
       setCurrentTab('home');
       showToast(`Welcome back, ${user.name}! Citizen reporting portal activated.`);
@@ -79,7 +95,7 @@ export default function App() {
 
     // Role Security: Citizen CANNOT access Authority routes
     if (currentUser.role === 'citizen') {
-      if (tab === 'admin' || tab === 'analytics') {
+      if (tab === 'admin' || tab === 'analytics' || tab === 'engineer' || tab === 'supervisor') {
         showToast('Access Restricted: Municipal Authority clearance required.');
         setCurrentTab('home');
         return;
@@ -88,9 +104,24 @@ export default function App() {
 
     // Role Security: Authority CANNOT access Citizen report/home forms
     if (currentUser.role === 'authority') {
+      const type = getAuthorityType(currentUser);
       if (tab === 'home' || tab === 'report' || tab === 'my-reports') {
-        showToast('Authority Mode: Use operations console for issue management.');
-        setCurrentTab('admin');
+        showToast('Authority Mode: Citizen submission forms not accessible.');
+        setCurrentTab(type === 'engineer' ? 'engineer' : type === 'supervisor' ? 'supervisor' : 'admin');
+        return;
+      }
+
+      // Engineer role isolation
+      if (type === 'engineer' && tab !== 'engineer' && tab !== 'map') {
+        showToast('Access Restricted: Field Engineer access limited to assigned tasks.');
+        setCurrentTab('engineer');
+        return;
+      }
+
+      // Supervisor role isolation
+      if (type === 'supervisor' && tab !== 'supervisor' && tab !== 'map') {
+        showToast('Access Restricted: Supervisor portal limited to department operations.');
+        setCurrentTab('supervisor');
         return;
       }
     }
@@ -139,6 +170,7 @@ export default function App() {
 
   const isCitizen = currentUser.role === 'citizen';
   const isAuthority = currentUser.role === 'authority';
+  const authorityType = isAuthority ? getAuthorityType(currentUser) : 'admin';
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-blue-500 selection:text-white font-sans text-slate-900">
@@ -205,18 +237,54 @@ export default function App() {
           </>
         )}
 
-        {/* AUTHORITY VIEWS */}
+        {/* AUTHORITY ROLE-SPECIFIC VIEWS */}
         {isAuthority && (
           <>
-            {currentTab === 'admin' && (
-              <AdminDashboard onSelectIssueToTrack={handleTrackIssue} />
+            {/* 1. ENGINEER R. MURTHY: My Assigned Tasks */}
+            {authorityType === 'engineer' && (
+              <>
+                {currentTab === 'engineer' && (
+                  <EngineerDashboard
+                    user={currentUser}
+                    onSelectIssueToTrack={handleTrackIssue}
+                  />
+                )}
+                {currentTab === 'map' && (
+                  <CityMapView onSelectIssue={handleTrackIssue} />
+                )}
+              </>
             )}
 
-            {currentTab === 'map' && (
-              <CityMapView onSelectIssue={handleTrackIssue} />
+            {/* 2. SUPERVISOR J. KHAN: Department Operations */}
+            {authorityType === 'supervisor' && (
+              <>
+                {currentTab === 'supervisor' && (
+                  <SupervisorDashboard
+                    user={currentUser}
+                    onSelectIssueToTrack={handleTrackIssue}
+                  />
+                )}
+                {currentTab === 'map' && (
+                  <CityMapView onSelectIssue={handleTrackIssue} />
+                )}
+              </>
             )}
 
-            {currentTab === 'analytics' && <AnalyticsView />}
+            {/* 3. CENTRAL OPERATIONS DISPATCH: Central Operations Control Room */}
+            {authorityType === 'admin' && (
+              <>
+                {currentTab === 'admin' && (
+                  <AdminControlRoom
+                    user={currentUser}
+                    onSelectIssueToTrack={handleTrackIssue}
+                  />
+                )}
+                {currentTab === 'map' && (
+                  <CityMapView onSelectIssue={handleTrackIssue} />
+                )}
+                {currentTab === 'analytics' && <AnalyticsView />}
+              </>
+            )}
           </>
         )}
       </main>
@@ -231,7 +299,10 @@ export default function App() {
             <span className={`text-[11px] px-2 py-0.5 rounded font-mono font-bold ${
               isAuthority ? 'bg-indigo-50 text-indigo-700' : 'bg-blue-50 text-blue-700'
             }`}>
-              {isAuthority ? 'AUTHORITY DESK SESSION' : 'CITIZEN SESSION'}
+              {isCitizen && 'CITIZEN SESSION'}
+              {isAuthority && authorityType === 'engineer' && 'ENGINEER TASK DESK (R. MURTHY)'}
+              {isAuthority && authorityType === 'supervisor' && 'SUPERVISOR DESK (J. KHAN)'}
+              {isAuthority && authorityType === 'admin' && 'CENTRAL HQ CONTROL ROOM (DISPATCH)'}
             </span>
           </div>
           <div className="flex items-center space-x-4">

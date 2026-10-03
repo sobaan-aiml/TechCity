@@ -11,12 +11,16 @@ import {
   addInternalNote,
   submitResolutionProof,
   verifyResolution,
+  supervisorAssignIssue,
+  adminApproveAssignment,
+  engineerUpdateTask,
+  supervisorVerifyTask,
   getAnalytics,
   resetDemoData,
   DEPARTMENTS,
 } from './db.js';
 import { analyzeIssueWithGemini } from './gemini.js';
-import { authenticateUser, registerUser, USERS } from './auth.js';
+import { authenticateUser, registerUser, USERS, AVAILABLE_ENGINEERS } from './auth.js';
 
 dotenv.config();
 
@@ -380,7 +384,142 @@ app.post('/api/issues/:id/verify-resolution', (req: Request, res: Response) => {
   }
 });
 
-// 13. Analytics summary & Hotspots
+// 13. Get Available Engineers for Supervisor Assignment
+app.get('/api/engineers', (_req: Request, res: Response) => {
+  res.json({ success: true, engineers: AVAILABLE_ENGINEERS });
+});
+
+// 14. Supervisor Assigns Issue to Engineer (transitions to PENDING_APPROVAL)
+app.post('/api/issues/:id/supervisor-assign', (req: Request, res: Response) => {
+  try {
+    const { supervisor_id, supervisor_name, engineer_id, engineer_name, instructions, deadline } = req.body;
+    if (!engineer_id || !engineer_name) {
+      res.status(400).json({ success: false, error: 'Target engineer is required.' });
+      return;
+    }
+
+    const updated = supervisorAssignIssue(req.params.id, {
+      supervisor_id: supervisor_id || 'user_auth_2',
+      supervisor_name: supervisor_name || 'Supervisor J. Khan',
+      engineer_id,
+      engineer_name,
+      instructions,
+      deadline,
+    });
+
+    if (!updated) {
+      res.status(404).json({ success: false, error: 'Issue not found' });
+      return;
+    }
+
+    res.json({
+      success: true,
+      issue: updated,
+      message: `Assignment submitted to Central Operations Dispatch for Admin Approval.`,
+    });
+  } catch (error: any) {
+    console.error('[API] supervisor-assign error:', error);
+    res.status(500).json({ success: false, error: 'Failed to assign engineer' });
+  }
+});
+
+// 15. Central Operations Dispatch (Admin) Approves or Rejects Assignment
+app.post('/api/issues/:id/admin-approve-assignment', (req: Request, res: Response) => {
+  try {
+    const { approved, rejection_reason, admin_name } = req.body;
+    const isApproved = Boolean(approved);
+
+    const updated = adminApproveAssignment(req.params.id, {
+      approved: isApproved,
+      rejection_reason,
+      admin_name: admin_name || 'Central Operations Dispatch',
+    });
+
+    if (!updated) {
+      res.status(404).json({ success: false, error: 'Issue not found' });
+      return;
+    }
+
+    res.json({
+      success: true,
+      issue: updated,
+      message: isApproved
+        ? `Assignment APPROVED. Work order dispatched to engineer.`
+        : `Assignment REJECTED and returned to supervisor for reassignment.`,
+    });
+  } catch (error: any) {
+    console.error('[API] admin-approve-assignment error:', error);
+    res.status(500).json({ success: false, error: 'Failed to process admin approval' });
+  }
+});
+
+// 16. Engineer Workflow (ACCEPT, START_WORK, ADD_NOTE, SUBMIT_COMPLETION)
+app.post('/api/issues/:id/engineer-action', (req: Request, res: Response) => {
+  try {
+    const { action, engineer_id, engineer_name, note, before_image, after_image, resolution_note } = req.body;
+    if (!action) {
+      res.status(400).json({ success: false, error: 'Action is required.' });
+      return;
+    }
+
+    const updated = engineerUpdateTask(req.params.id, {
+      action,
+      engineer_id: engineer_id || 'user_auth_1',
+      engineer_name: engineer_name || 'Engineer R. Murthy',
+      note,
+      before_image,
+      after_image,
+      resolution_note,
+    });
+
+    if (!updated) {
+      res.status(404).json({ success: false, error: 'Issue not found' });
+      return;
+    }
+
+    res.json({
+      success: true,
+      issue: updated,
+      message: `Action ${action} recorded successfully.`,
+    });
+  } catch (error: any) {
+    console.error('[API] engineer-action error:', error);
+    res.status(500).json({ success: false, error: 'Failed to process engineer action' });
+  }
+});
+
+// 17. Supervisor Verifies Completed Work (VERIFY / REOPEN)
+app.post('/api/issues/:id/supervisor-verify', (req: Request, res: Response) => {
+  try {
+    const { supervisor_id, supervisor_name, verified, rejection_note } = req.body;
+    const isVerified = Boolean(verified);
+
+    const updated = supervisorVerifyTask(req.params.id, {
+      supervisor_id: supervisor_id || 'user_auth_2',
+      supervisor_name: supervisor_name || 'Supervisor J. Khan',
+      verified: isVerified,
+      rejection_note,
+    });
+
+    if (!updated) {
+      res.status(404).json({ success: false, error: 'Issue not found' });
+      return;
+    }
+
+    res.json({
+      success: true,
+      issue: updated,
+      message: isVerified
+        ? `Task verified and marked RESOLVED.`
+        : `Task reopened for engineer rework.`,
+    });
+  } catch (error: any) {
+    console.error('[API] supervisor-verify error:', error);
+    res.status(500).json({ success: false, error: 'Failed to verify task' });
+  }
+});
+
+// 18. Analytics summary & Hotspots
 app.get('/api/analytics', (_req: Request, res: Response) => {
   try {
     const analytics = getAnalytics();
@@ -391,7 +530,7 @@ app.get('/api/analytics', (_req: Request, res: Response) => {
   }
 });
 
-// 14. Reset demo data
+// 19. Reset demo data
 app.post('/api/demo/reset', (_req: Request, res: Response) => {
   try {
     const issues = resetDemoData();

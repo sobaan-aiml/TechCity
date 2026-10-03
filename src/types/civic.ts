@@ -10,6 +10,33 @@ export type IssueStatus =
   | 'Resolved & Verified'
   | 'REOPENED';
 
+export type AssignmentStatus =
+  | 'UNASSIGNED'
+  | 'PENDING_APPROVAL'
+  | 'APPROVED'
+  | 'REJECTED';
+
+export type AdminApprovalStatus =
+  | 'NONE'
+  | 'PENDING'
+  | 'APPROVED'
+  | 'REJECTED';
+
+export type TaskStatus =
+  | 'UNASSIGNED'
+  | 'ASSIGNED'
+  | 'ACCEPTED'
+  | 'IN_PROGRESS'
+  | 'COMPLETED'
+  | 'VERIFIED'
+  | 'REOPENED';
+
+export type VerificationStatus =
+  | 'NONE'
+  | 'PENDING'
+  | 'VERIFIED'
+  | 'REOPENED';
+
 export type IssueCategory =
   | 'Pothole'
   | 'Damaged Road'
@@ -104,6 +131,29 @@ export interface CivicIssue {
   ai_reasoning?: string;
   created_at: string;
   updated_at: string;
+
+  // Authority Workflow Fields
+  engineer_id?: string;
+  engineer_name?: string;
+  supervisor_id?: string;
+  supervisor_name?: string;
+  assigned_by?: string;
+  assignment_instructions?: string;
+  assignment_date?: string;
+  assignment_status?: AssignmentStatus;
+  admin_approval_status?: AdminApprovalStatus;
+  admin_reviewed_by?: string;
+  admin_reviewed_at?: string;
+  admin_rejection_reason?: string;
+  task_status?: TaskStatus;
+  task_accepted_at?: string;
+  task_started_at?: string;
+  task_completed_at?: string;
+  work_notes?: string;
+  verification_status?: VerificationStatus;
+  verified_by?: string;
+  verified_at?: string;
+
   timeline?: TimelineEvent[];
   resolution_proof?: ResolutionProof;
   supporting_reports?: SupportingReport[];

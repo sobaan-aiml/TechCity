@@ -1,36 +1,53 @@
 {
   "issues": [
     {
-      "id": "iss_1791009424140_e8a6a",
-      "tracking_id": "CIV-2026-00107",
-      "category": "Broken Streetlight",
-      "title": "Streetlight pole flickering and dead at intersection",
-      "description": "The lamp on pole 18 has been off for three nights. High foot traffic from students.",
+      "id": "iss_1791014118551_3mzpa",
+      "tracking_id": "CIV-2026-00109",
+      "category": "Garbage / Waste",
+      "title": "Overflowing Garbage on Market Lane",
+      "description": "Large garbage heap accumulating on Market Lane footpath, causing foul odor and blocking passersby.",
       "evidence_url": "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80",
-      "latitude": 12.9362,
-      "longitude": 77.6251,
-      "address": "Park Avenue 4th Cross, IT Corridor",
+      "latitude": 12.97,
+      "longitude": 77.59,
+      "address": "Market Lane, Ward 85",
       "landmark": "",
-      "severity": "MEDIUM",
-      "urgency": "MEDIUM",
-      "priority": "MEDIUM",
-      "priority_score": 33,
+      "severity": "HIGH",
+      "urgency": "HIGH",
+      "priority": "HIGH",
+      "priority_score": 53,
       "priority_reasons": [
-        "MEDIUM severity assessment (+20 pts)",
-        "MEDIUM urgency requirement (+10 pts)",
+        "HIGH severity assessment (+30 pts)",
+        "HIGH urgency requirement (+20 pts)",
         "1 citizen initially reported (+3 pts)"
       ],
       "affected_people": 1,
-      "department": "Electrical & Street Lighting",
+      "department": "Solid Waste Management",
       "status": "Resolved & Verified",
-      "sla_hours": 48,
-      "sla_deadline": "2026-10-05T06:37:04.140Z",
+      "sla_hours": 24,
+      "sla_deadline": "2026-10-04T07:55:18.551Z",
       "is_overdue": false,
-      "contact_name": "Rohan Mehra",
-      "contact_email": "rohan@example.com",
+      "contact_name": "Vikram Sharma",
       "is_demo": false,
-      "created_at": "2026-10-03T06:37:04.140Z",
-      "updated_at": "2026-10-03T06:37:18.671Z"
+      "created_at": "2026-10-03T07:55:18.551Z",
+      "updated_at": "2026-10-03T07:56:18.913Z",
+      "supervisor_id": "user_auth_2",
+      "supervisor_name": "Supervisor J. Khan",
+      "assigned_by": "Supervisor J. Khan",
+      "engineer_id": "user_auth_1",
+      "engineer_name": "Engineer R. Murthy",
+      "assignment_instructions": "Clear all bulk refuse and disinfect sidewalk.",
+      "assignment_date": "2026-10-03T07:55:38.055Z",
+      "assignment_status": "APPROVED",
+      "admin_approval_status": "APPROVED",
+      "task_status": "VERIFIED",
+      "admin_reviewed_by": "Central Operations Dispatch",
+      "admin_reviewed_at": "2026-10-03T07:55:46.178Z",
+      "task_accepted_at": "2026-10-03T07:55:53.908Z",
+      "task_started_at": "2026-10-03T07:56:05.013Z",
+      "task_completed_at": "2026-10-03T07:56:14.012Z",
+      "verification_status": "VERIFIED",
+      "verified_by": "Supervisor J. Khan",
+      "verified_at": "2026-10-03T07:56:18.913Z"
     },
     {
       "id": "iss_seed_1",
@@ -56,16 +73,30 @@
       "affected_people": 6,
       "department": "Roads & Infrastructure",
       "status": "In Progress",
+      "task_status": "IN_PROGRESS",
+      "assignment_status": "APPROVED",
+      "admin_approval_status": "APPROVED",
+      "admin_reviewed_by": "Central Operations Dispatch",
+      "supervisor_id": "user_auth_2",
+      "supervisor_name": "Supervisor J. Khan",
+      "assigned_by": "Supervisor J. Khan",
+      "engineer_id": "user_auth_1",
+      "engineer_name": "Engineer R. Murthy",
+      "assignment_instructions": "Patch crater with industrial hot-mix asphalt and compact with 3-ton roller.",
+      "assignment_date": "2026-10-02T03:51:54.409Z",
+      "task_accepted_at": "2026-10-02T05:51:54.409Z",
+      "task_started_at": "2026-10-03T03:51:54.409Z",
+      "work_notes": "Cold-mix applied temporarily; heavy compaction team on site.",
       "sla_hours": 12,
-      "sla_deadline": "2026-10-02T20:36:49.782Z",
+      "sla_deadline": "2026-10-02T21:51:54.409Z",
       "is_overdue": true,
       "contact_name": "Vikram Sharma",
       "contact_email": "vikram.s@example.com",
       "is_demo": true,
       "ai_summary": "Severe road pothole creating active skid hazards for commuter two-wheelers near transit hub.",
       "ai_reasoning": "High risk of vehicular collision and bodily injury due to crater depth in a high-speed arterial roadway.",
-      "created_at": "2026-10-01T22:36:49.782Z",
-      "updated_at": "2026-10-03T02:36:49.782Z"
+      "created_at": "2026-10-01T23:51:54.409Z",
+      "updated_at": "2026-10-03T03:51:54.409Z"
     },
     {
       "id": "iss_seed_2",
@@ -90,17 +121,29 @@
       ],
       "affected_people": 4,
       "department": "Solid Waste Management",
-      "status": "REOPENED",
+      "status": "Resolution Submitted",
+      "task_status": "COMPLETED",
+      "assignment_status": "APPROVED",
+      "admin_approval_status": "APPROVED",
+      "admin_reviewed_by": "Central Operations Dispatch",
+      "supervisor_id": "user_auth_2",
+      "supervisor_name": "Supervisor J. Khan",
+      "assigned_by": "Supervisor J. Khan",
+      "engineer_id": "user_auth_1",
+      "engineer_name": "Engineer R. Murthy",
+      "verification_status": "PENDING",
+      "assignment_instructions": "Clear overflowing waste dumpster and sanitize area.",
+      "task_completed_at": "2026-10-03T05:51:54.409Z",
       "sla_hours": 24,
-      "sla_deadline": "2026-10-03T10:36:49.782Z",
+      "sla_deadline": "2026-10-03T11:51:54.409Z",
       "is_overdue": false,
       "contact_name": "Anita Deshmukh",
       "contact_phone": "+91 98450 12345",
       "is_demo": true,
       "ai_summary": "Solid waste accumulation blocking commercial pedestrian corridor and causing sanitation concern.",
       "ai_reasoning": "Biohazard risk from decomposing organic matter in high-footfall marketplace.",
-      "created_at": "2026-10-02T02:36:49.782Z",
-      "updated_at": "2026-10-03T06:37:28.371Z"
+      "created_at": "2026-10-02T03:51:54.409Z",
+      "updated_at": "2026-10-03T05:51:54.409Z"
     },
     {
       "id": "iss_seed_3",
@@ -127,15 +170,15 @@
       "department": "Stormwater Drainage",
       "status": "Assigned",
       "sla_hours": 12,
-      "sla_deadline": "2026-10-03T14:36:49.782Z",
+      "sla_deadline": "2026-10-03T15:51:54.409Z",
       "is_overdue": false,
       "contact_name": "Rahul Sen",
       "contact_email": "rahul.sen@example.com",
       "is_demo": true,
       "ai_summary": "Severe road sub-grade submergence cutting off vehicular connection beneath railway tracks.",
       "ai_reasoning": "Life safety danger of vehicle stranding, engine flooding, and sudden depth drowning hazard.",
-      "created_at": "2026-10-03T02:36:49.782Z",
-      "updated_at": "2026-10-03T05:36:49.782Z"
+      "created_at": "2026-10-03T03:51:54.409Z",
+      "updated_at": "2026-10-03T06:51:54.409Z"
     },
     {
       "id": "iss_seed_4",
@@ -162,14 +205,14 @@
       "department": "Electrical & Street Lighting",
       "status": "Assigned",
       "sla_hours": 48,
-      "sla_deadline": "2026-10-04T12:36:49.782Z",
+      "sla_deadline": "2026-10-04T13:51:54.409Z",
       "is_overdue": false,
       "contact_name": "Divya Nair",
       "is_demo": true,
       "ai_summary": "Dark street lighting corridor posing safety and security vulnerability.",
       "ai_reasoning": "Diminished nighttime public safety in dense residential and college corridor.",
-      "created_at": "2026-10-02T12:36:49.782Z",
-      "updated_at": "2026-10-03T00:36:49.782Z"
+      "created_at": "2026-10-02T13:51:54.409Z",
+      "updated_at": "2026-10-03T01:51:54.409Z"
     },
     {
       "id": "iss_seed_5",
@@ -193,17 +236,28 @@
         "Open for 1 day (36h) (+6 pts)"
       ],
       "affected_people": 2,
-      "department": "Stormwater Drainage",
-      "status": "Reported",
+      "department": "Roads & Infrastructure",
+      "status": "Assigned",
+      "task_status": "ASSIGNED",
+      "assignment_status": "APPROVED",
+      "admin_approval_status": "APPROVED",
+      "admin_reviewed_by": "Central Operations Dispatch",
+      "supervisor_id": "user_auth_2",
+      "supervisor_name": "Supervisor J. Khan",
+      "assigned_by": "Supervisor J. Khan",
+      "engineer_id": "user_auth_1",
+      "engineer_name": "Engineer R. Murthy",
+      "assignment_instructions": "Inspect drainage grate, remove solid silt blockage, and restore rainwater inflow.",
+      "assignment_date": "2026-10-03T01:51:54.409Z",
       "sla_hours": 48,
-      "sla_deadline": "2026-10-03T18:36:49.782Z",
+      "sla_deadline": "2026-10-03T19:51:54.409Z",
       "is_overdue": false,
       "contact_name": "Karthik Pillai",
       "is_demo": true,
       "ai_summary": "Inlet grate blockage causing backwater pooling near healthcare facility.",
       "ai_reasoning": "Moderate localized flooding risk without immediate structural threat.",
-      "created_at": "2026-10-01T18:36:49.782Z",
-      "updated_at": "2026-10-01T18:36:49.782Z"
+      "created_at": "2026-10-01T19:51:54.409Z",
+      "updated_at": "2026-10-03T01:51:54.409Z"
     },
     {
       "id": "iss_seed_6",
@@ -229,15 +283,110 @@
       "affected_people": 4,
       "department": "Horticulture & Trees",
       "status": "Resolved & Verified",
+      "task_status": "VERIFIED",
+      "verification_status": "VERIFIED",
+      "verified_by": "Central Operations Dispatch",
       "sla_hours": 24,
-      "sla_deadline": "2026-10-03T02:36:49.782Z",
+      "sla_deadline": "2026-10-03T03:51:54.409Z",
       "is_overdue": false,
       "contact_name": "Suresh Kumar",
       "is_demo": true,
       "ai_summary": "Major tree obstruction cleared and timber transported to municipal nursery.",
       "ai_reasoning": "Rapid clearance executed to restore traffic circulation and prevent wire damage.",
-      "created_at": "2026-10-01T06:36:49.782Z",
-      "updated_at": "2026-10-02T22:36:49.782Z"
+      "created_at": "2026-10-01T07:51:54.409Z",
+      "updated_at": "2026-10-02T23:51:54.409Z"
+    },
+    {
+      "id": "iss_seed_7",
+      "tracking_id": "CIV-2026-00107",
+      "category": "Garbage / Waste",
+      "title": "Overloaded Secondary Dump Site near Bus Terminal",
+      "description": "Secondary collection container filled past capacity. Overflowing trash bags scattering onto traffic lane during morning commute.",
+      "evidence_url": "https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80",
+      "latitude": 12.9735,
+      "longitude": 77.5985,
+      "address": "Central Terminal Road, Ward 85",
+      "landmark": "Bus Bay Platform 4",
+      "severity": "HIGH",
+      "urgency": "HIGH",
+      "priority": "HIGH",
+      "priority_score": 70,
+      "priority_reasons": [
+        "HIGH severity bio-waste (+30 pts)",
+        "HIGH urgency commute route (+20 pts)",
+        "5 community members reported (+15 pts)"
+      ],
+      "affected_people": 5,
+      "department": "Solid Waste Management",
+      "status": "Reported",
+      "assignment_status": "PENDING_APPROVAL",
+      "admin_approval_status": "PENDING",
+      "task_status": "UNASSIGNED",
+      "supervisor_id": "user_auth_2",
+      "supervisor_name": "Supervisor J. Khan",
+      "assigned_by": "Supervisor J. Khan",
+      "engineer_id": "user_auth_1",
+      "engineer_name": "Engineer R. Murthy",
+      "assignment_instructions": "Deploy compacting tipper truck and spray liquid sanitizing solution.",
+      "assignment_date": "2026-10-03T06:51:54.409Z",
+      "sla_hours": 12,
+      "sla_deadline": "2026-10-03T18:51:54.409Z",
+      "is_overdue": false,
+      "contact_name": "Mahesh Reddy",
+      "is_demo": true,
+      "ai_summary": "Commercial hub waste overflow requiring heavy equipment clearance.",
+      "created_at": "2026-10-03T05:51:54.409Z",
+      "updated_at": "2026-10-03T06:51:54.409Z"
+    },
+    {
+      "id": "iss_seed_8",
+      "tracking_id": "CIV-2026-00108",
+      "category": "Garbage / Waste",
+      "title": "Illegal Bulk Vegetable Waste Dumping behind City Market Arcade",
+      "description": "Rotting vegetable matter and wooden crates dumped along the service alley. Choking storm drains and creating rat infestation.",
+      "evidence_url": "https://images.unsplash.com/photo-1582408921715-18e7806365c1?auto=format&fit=crop&w=800&q=80",
+      "latitude": 12.9682,
+      "longitude": 77.5918,
+      "address": "Market Service Alley 2, Ward 85",
+      "landmark": "Rear Exit of Wholesale Market",
+      "severity": "HIGH",
+      "urgency": "HIGH",
+      "priority": "HIGH",
+      "priority_score": 74,
+      "priority_reasons": [
+        "HIGH severity organic hazard (+30 pts)",
+        "HIGH urgency pest infestation (+20 pts)",
+        "7 community members reported (+21 pts)"
+      ],
+      "affected_people": 7,
+      "department": "Solid Waste Management",
+      "status": "Resolved & Verified",
+      "assignment_status": "APPROVED",
+      "admin_approval_status": "APPROVED",
+      "task_status": "VERIFIED",
+      "sla_hours": 24,
+      "sla_deadline": "2026-10-04T12:00:00.000Z",
+      "is_overdue": false,
+      "contact_name": "Subramani K.",
+      "is_demo": true,
+      "ai_summary": "Market alley biohazard dump requires immediate mechanical pickup.",
+      "created_at": "2026-10-03T03:51:54.409Z",
+      "updated_at": "2026-10-03T07:52:30.928Z",
+      "supervisor_id": "user_auth_2",
+      "supervisor_name": "Supervisor J. Khan",
+      "assigned_by": "Supervisor J. Khan",
+      "engineer_id": "user_auth_1",
+      "engineer_name": "Engineer R. Murthy",
+      "assignment_instructions": "Urgent cleanup needed behind vegetable market.",
+      "assignment_date": "2026-10-03T07:52:02.642Z",
+      "admin_reviewed_by": "Central Operations Dispatch",
+      "admin_reviewed_at": "2026-10-03T07:52:08.560Z",
+      "task_accepted_at": "2026-10-03T07:52:14.333Z",
+      "task_started_at": "2026-10-03T07:52:18.160Z",
+      "task_completed_at": "2026-10-03T07:52:23.454Z",
+      "verification_status": "VERIFIED",
+      "verified_by": "Supervisor J. Khan",
+      "verified_at": "2026-10-03T07:52:30.928Z"
     }
   ],
   "timeline": [
@@ -249,7 +398,7 @@
       "description": "Report filed with initial priority HIGH (12 hour target SLA).",
       "actor": "Citizen",
       "actor_name": "Vikram Sharma",
-      "created_at": "2026-10-01T22:36:49.782Z"
+      "created_at": "2026-10-01T23:51:54.409Z"
     },
     {
       "id": "tl_s1_2",
@@ -259,7 +408,7 @@
       "description": "Gemini recognized high collision risk for two-wheelers. Elevated priority to CRITICAL.",
       "actor": "AI System",
       "actor_name": "TechCity AI Engine",
-      "created_at": "2026-10-01T22:37:19.782Z"
+      "created_at": "2026-10-01T23:52:24.409Z"
     },
     {
       "id": "tl_s1_3",
@@ -269,7 +418,7 @@
       "description": "Forwarded to Central Zone Rapid Asphalt Repair Unit.",
       "actor": "Municipal Authority",
       "actor_name": "Control Room Dispatch",
-      "created_at": "2026-10-02T02:36:49.782Z"
+      "created_at": "2026-10-02T03:51:54.409Z"
     },
     {
       "id": "tl_s1_4",
@@ -279,7 +428,7 @@
       "description": "Cold-mix asphalt truck dispatched. Safety barricades placed.",
       "actor": "Department Staff",
       "actor_name": "Engineer R. Murthy",
-      "created_at": "2026-10-03T02:36:49.782Z"
+      "created_at": "2026-10-03T03:51:54.409Z"
     },
     {
       "id": "tl_s2_1",
@@ -289,7 +438,7 @@
       "description": "Trash pile reported outside market gate.",
       "actor": "Citizen",
       "actor_name": "Anita Deshmukh",
-      "created_at": "2026-10-02T02:36:49.782Z"
+      "created_at": "2026-10-02T03:51:54.409Z"
     },
     {
       "id": "tl_s2_2",
@@ -299,7 +448,7 @@
       "description": "Designated to Ward 85 Sanitation Supervisor.",
       "actor": "Municipal Authority",
       "actor_name": "Operations Dispatch",
-      "created_at": "2026-10-02T06:36:49.782Z"
+      "created_at": "2026-10-02T07:51:54.409Z"
     },
     {
       "id": "tl_s2_3",
@@ -309,7 +458,7 @@
       "description": "Solid waste fully cleared via compactor truck. Bleaching powder sprayed. Awaiting citizen confirmation.",
       "actor": "Department Staff",
       "actor_name": "Supervisor J. Khan",
-      "created_at": "2026-10-03T04:36:49.782Z"
+      "created_at": "2026-10-03T05:51:54.409Z"
     },
     {
       "id": "tl_s6_1",
@@ -319,7 +468,7 @@
       "description": "Fallen branch blocking road lane.",
       "actor": "Citizen",
       "actor_name": "Suresh Kumar",
-      "created_at": "2026-10-01T06:36:49.782Z"
+      "created_at": "2026-10-01T07:51:54.409Z"
     },
     {
       "id": "tl_s6_2",
@@ -329,7 +478,7 @@
       "description": "Chainsaw crew cut and moved wood.",
       "actor": "Department Staff",
       "actor_name": "Arborist Unit",
-      "created_at": "2026-10-02T18:36:49.782Z"
+      "created_at": "2026-10-02T19:51:54.409Z"
     },
     {
       "id": "tl_s6_3",
@@ -339,57 +488,137 @@
       "description": "Citizen verified lane is clear and safe for passage.",
       "actor": "Citizen",
       "actor_name": "Suresh Kumar",
-      "created_at": "2026-10-02T22:36:49.782Z"
+      "created_at": "2026-10-02T23:51:54.409Z"
     },
     {
-      "id": "tl_1791009424140_1",
-      "issue_id": "iss_1791009424140_e8a6a",
+      "id": "tl_1791013922642",
+      "issue_id": "iss_seed_8",
+      "status": "Reported",
+      "title": "Engineer Assigned · Pending Admin Approval",
+      "description": "Supervisor Supervisor J. Khan designated Engineer R. Murthy with instructions: \"Urgent cleanup needed behind vegetable market.\". Submitted for Central HQ approval.",
+      "actor": "Municipal Authority",
+      "actor_name": "Supervisor J. Khan",
+      "created_at": "2026-10-03T07:52:02.642Z"
+    },
+    {
+      "id": "tl_1791013928560",
+      "issue_id": "iss_seed_8",
+      "status": "Assigned",
+      "title": "Assignment Approved by Central Operations HQ",
+      "description": "HQ Dispatch approved assignment for Engineer R. Murthy. Work order dispatched to engineer task queue.",
+      "actor": "Municipal Authority",
+      "actor_name": "Central Operations Dispatch",
+      "created_at": "2026-10-03T07:52:08.560Z"
+    },
+    {
+      "id": "tl_1791013934333",
+      "issue_id": "iss_seed_8",
+      "status": "Assigned",
+      "title": "Task Accepted by Field Engineer",
+      "description": "Engineer R. Murthy accepted the work order. Crew preparation underway.",
+      "actor": "Department Staff",
+      "actor_name": "Engineer R. Murthy",
+      "created_at": "2026-10-03T07:52:14.333Z"
+    },
+    {
+      "id": "tl_1791013938160",
+      "issue_id": "iss_seed_8",
+      "status": "In Progress",
+      "title": "Field Work Started",
+      "description": "On-site repair and restoration begun by Engineer R. Murthy. Equipment deployed.",
+      "actor": "Department Staff",
+      "actor_name": "Engineer R. Murthy",
+      "created_at": "2026-10-03T07:52:18.160Z"
+    },
+    {
+      "id": "tl_1791013943454",
+      "issue_id": "iss_seed_8",
+      "status": "Resolution Submitted",
+      "title": "Work Completed · Submitted for Supervisor Verification",
+      "description": "Engineer R. Murthy completed field repairs and uploaded before/after evidence proof. Awaiting supervisor audit.",
+      "actor": "Department Staff",
+      "actor_name": "Engineer R. Murthy",
+      "created_at": "2026-10-03T07:52:23.454Z"
+    },
+    {
+      "id": "tl_1791013950928",
+      "issue_id": "iss_seed_8",
+      "status": "Resolved & Verified",
+      "title": "Supervisor Verified & Work Accepted",
+      "description": "Supervisor Supervisor J. Khan inspected and confirmed quality of work. Ticket marked RESOLVED.",
+      "actor": "Municipal Authority",
+      "actor_name": "Supervisor J. Khan",
+      "created_at": "2026-10-03T07:52:30.928Z"
+    },
+    {
+      "id": "tl_1791014118551_1",
+      "issue_id": "iss_1791014118551_3mzpa",
       "status": "Reported",
       "title": "Issue Submitted by Citizen",
-      "description": "Report filed with priority MEDIUM (SLA target: 48 hours).",
+      "description": "Report filed with priority HIGH (SLA target: 24 hours).",
       "actor": "Citizen",
-      "actor_name": "Rohan Mehra",
-      "created_at": "2026-10-03T06:37:04.140Z"
+      "actor_name": "Vikram Sharma",
+      "created_at": "2026-10-03T07:55:18.551Z"
     },
     {
-      "id": "tl_1791009428192",
-      "issue_id": "iss_1791009424140_e8a6a",
-      "status": "In Progress",
-      "title": "Status changed to In Progress",
-      "description": "Field electrician deployed to replace fuse and lamp bulb.",
+      "id": "tl_1791014138055",
+      "issue_id": "iss_1791014118551_3mzpa",
+      "status": "Reported",
+      "title": "Engineer Assigned · Pending Admin Approval",
+      "description": "Supervisor Supervisor J. Khan designated Engineer R. Murthy with instructions: \"Clear all bulk refuse and disinfect sidewalk.\". Submitted for Central HQ approval.",
       "actor": "Municipal Authority",
-      "actor_name": "Operations Officer",
-      "created_at": "2026-10-03T06:37:08.192Z"
+      "actor_name": "Supervisor J. Khan",
+      "created_at": "2026-10-03T07:55:38.055Z"
     },
     {
-      "id": "tl_1791009434183",
-      "issue_id": "iss_1791009424140_e8a6a",
-      "status": "Resolution Submitted",
-      "title": "Resolution Proof Uploaded",
-      "description": "Field team documented completion. Awaiting citizen confirmation: \"Replaced burnt 70W sodium lamp with new high-efficiency 45W LED fixture. Tested luminaire at 230V and illuminated intersection safely.\"",
+      "id": "tl_1791014146178",
+      "issue_id": "iss_1791014118551_3mzpa",
+      "status": "Assigned",
+      "title": "Assignment Approved by Central Operations HQ",
+      "description": "HQ Dispatch approved assignment for Engineer R. Murthy. Work order dispatched to engineer task queue.",
+      "actor": "Municipal Authority",
+      "actor_name": "Central Operations Dispatch",
+      "created_at": "2026-10-03T07:55:46.178Z"
+    },
+    {
+      "id": "tl_1791014153908",
+      "issue_id": "iss_1791014118551_3mzpa",
+      "status": "Assigned",
+      "title": "Task Accepted by Field Engineer",
+      "description": "Engineer R. Murthy accepted the work order. Crew preparation underway.",
       "actor": "Department Staff",
-      "actor_name": "Lineman Unit 3 (Ward 102)",
-      "created_at": "2026-10-03T06:37:14.183Z"
+      "actor_name": "Engineer R. Murthy",
+      "created_at": "2026-10-03T07:55:53.908Z"
     },
     {
-      "id": "tl_1791009438671",
-      "issue_id": "iss_1791009424140_e8a6a",
+      "id": "tl_1791014165013",
+      "issue_id": "iss_1791014118551_3mzpa",
+      "status": "In Progress",
+      "title": "Field Work Started",
+      "description": "On-site repair and restoration begun by Engineer R. Murthy. Equipment deployed.",
+      "actor": "Department Staff",
+      "actor_name": "Engineer R. Murthy",
+      "created_at": "2026-10-03T07:56:05.013Z"
+    },
+    {
+      "id": "tl_1791014174012",
+      "issue_id": "iss_1791014118551_3mzpa",
+      "status": "Resolution Submitted",
+      "title": "Work Completed · Submitted for Supervisor Verification",
+      "description": "Engineer R. Murthy completed field repairs and uploaded before/after evidence proof. Awaiting supervisor audit.",
+      "actor": "Department Staff",
+      "actor_name": "Engineer R. Murthy",
+      "created_at": "2026-10-03T07:56:14.012Z"
+    },
+    {
+      "id": "tl_1791014178913",
+      "issue_id": "iss_1791014118551_3mzpa",
       "status": "Resolved & Verified",
-      "title": "Resolution Verified & Accepted by Citizen",
-      "description": "The citizen confirmed that public infrastructure has been successfully restored.",
-      "actor": "Citizen",
-      "actor_name": "Rohan Mehra",
-      "created_at": "2026-10-03T06:37:18.671Z"
-    },
-    {
-      "id": "tl_1791009448371",
-      "issue_id": "iss_seed_2",
-      "status": "REOPENED",
-      "title": "Resolution Rejected - Ticket Reopened",
-      "description": "Citizen noted: \"Trash cleared but footpath still stained and foul smell remains\". Escalated to authority for re-dispatch.",
-      "actor": "Citizen",
-      "actor_name": "Anita Deshmukh",
-      "created_at": "2026-10-03T06:37:28.371Z"
+      "title": "Supervisor Verified & Work Accepted",
+      "description": "Supervisor Supervisor J. Khan inspected and confirmed quality of work. Ticket marked RESOLVED.",
+      "actor": "Municipal Authority",
+      "actor_name": "Supervisor J. Khan",
+      "created_at": "2026-10-03T07:56:18.913Z"
     }
   ],
   "supporting_reports": [
@@ -399,21 +628,21 @@
       "citizen_name": "Mohan Lal",
       "citizen_phone": "+91 97312 00112",
       "note": "My scooter wheel nearly buckled here this morning.",
-      "created_at": "2026-10-02T10:36:49.782Z"
+      "created_at": "2026-10-02T11:51:54.409Z"
     },
     {
       "id": "sup_2",
       "issue_id": "iss_seed_1",
       "citizen_name": "Sneha Patel",
       "note": "I also take this road daily, very dangerous in the dark.",
-      "created_at": "2026-10-02T16:36:49.782Z"
+      "created_at": "2026-10-02T17:51:54.409Z"
     },
     {
       "id": "sup_3",
       "issue_id": "iss_seed_2",
       "citizen_name": "Rajiv Mehra",
       "note": "Shopkeeper next door, odor is unbearable for customers.",
-      "created_at": "2026-10-02T08:36:49.782Z"
+      "created_at": "2026-10-02T09:51:54.409Z"
     }
   ],
   "resolution_proofs": [
@@ -424,8 +653,7 @@
       "after_image": "https://images.unsplash.com/photo-1584467735871-8e85353a8413?auto=format&fit=crop&w=800&q=80",
       "resolution_note": "Sanitation squad completed complete garbage evacuation using hydraulic tipper vehicle. Footpath swept clean and disinfected with lime powder.",
       "submitted_by": "Supervisor J. Khan (Ward 85 Sanitation)",
-      "submitted_at": "2026-10-03T04:36:49.782Z",
-      "rejection_reason": "Trash cleared but footpath still stained and foul smell remains"
+      "submitted_at": "2026-10-03T05:51:54.409Z"
     },
     {
       "id": "proof_seed_6",
@@ -434,19 +662,29 @@
       "after_image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
       "resolution_note": "Branch chopped, timber logged, and carriageway thoroughly swept.",
       "submitted_by": "Arborist Field Crew #4",
-      "submitted_at": "2026-10-02T18:36:49.782Z",
-      "verified_at": "2026-10-02T22:36:49.782Z"
+      "submitted_at": "2026-10-02T19:51:54.409Z",
+      "verified_at": "2026-10-02T23:51:54.409Z"
     },
     {
-      "id": "proof_1791009434183",
-      "issue_id": "iss_1791009424140_e8a6a",
-      "before_image": "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80",
-      "after_image": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80",
-      "resolution_note": "Replaced burnt 70W sodium lamp with new high-efficiency 45W LED fixture. Tested luminaire at 230V and illuminated intersection safely.",
-      "submitted_by": "Lineman Unit 3 (Ward 102)",
-      "submitted_at": "2026-10-03T06:37:14.183Z",
-      "verified_at": "2026-10-03T06:37:18.671Z"
+      "id": "proof_1791013943454",
+      "issue_id": "iss_seed_8",
+      "before_image": "https://images.unsplash.com/photo-1582408921715-18e7806365c1?auto=format&fit=crop&w=800&q=80",
+      "after_image": "https://images.unsplash.com/photo-1584467735871-8e85353a8413?auto=format&fit=crop&w=800&q=80",
+      "resolution_note": "Bulk vegetable waste cleared using mechanical loader and 2 dump trucks. Disinfected with lime.",
+      "submitted_by": "Engineer R. Murthy",
+      "submitted_at": "2026-10-03T07:52:23.454Z",
+      "verified_at": "2026-10-03T07:52:30.928Z"
+    },
+    {
+      "id": "proof_1791014174012",
+      "issue_id": "iss_1791014118551_3mzpa",
+      "before_image": "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80",
+      "after_image": "https://images.unsplash.com/photo-1541888946425-d0fbb18615f8?auto=format&fit=crop&w=800&q=80",
+      "resolution_note": "Refuse cleared, area hosed down with disinfectant, footpath fully reopened.",
+      "submitted_by": "Engineer R. Murthy",
+      "submitted_at": "2026-10-03T07:56:14.012Z",
+      "verified_at": "2026-10-03T07:56:18.913Z"
     }
   ],
-  "last_ticket_number": 107
+  "last_ticket_number": 109
 }

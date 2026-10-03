@@ -293,6 +293,10 @@ export function createIssue(data: {
     is_demo: false,
     ai_summary: data.ai_summary,
     ai_reasoning: data.ai_reasoning,
+    assignment_status: 'UNASSIGNED',
+    admin_approval_status: 'NONE',
+    task_status: 'UNASSIGNED',
+    verification_status: 'NONE',
     created_at: nowIso,
     updated_at: nowIso,
   };
@@ -563,6 +567,285 @@ export function verifyResolution(
   return attachRelations(issue, db);
 }
 
+// -------------------------------------------------------------
+// ROLE-BASED AUTHORITY WORKFLOW MUTATIONS
+// -------------------------------------------------------------
+
+// 1. Supervisor Assigns Issue to Engineer (Transitions to PENDING_APPROVAL)
+export function supervisorAssignIssue(
+  issueId: string,
+  data: {
+    supervisor_id: string;
+    supervisor_name: string;
+    engineer_id: string;
+    engineer_name: string;
+    instructions?: string;
+    deadline?: string;
+  }
+): CivicIssue | null {
+  const db = loadDatabase();
+  const issue = db.issues.find(i => i.id === issueId || i.tracking_id === issueId);
+  if (!issue) return null;
+
+  const nowIso = new Date().toISOString();
+  issue.updated_at = nowIso;
+  issue.supervisor_id = data.supervisor_id;
+  issue.supervisor_name = data.supervisor_name;
+  issue.assigned_by = data.supervisor_name;
+  issue.engineer_id = data.engineer_id;
+  issue.engineer_name = data.engineer_name;
+  issue.assignment_instructions = data.instructions || 'Inspect site, repair infrastructure, and submit completion proof.';
+  issue.assignment_date = nowIso;
+  issue.assignment_status = 'PENDING_APPROVAL';
+  issue.admin_approval_status = 'PENDING';
+  issue.task_status = 'UNASSIGNED';
+
+  if (data.deadline) {
+    issue.sla_deadline = data.deadline;
+  }
+
+  db.timeline.push({
+    id: `tl_${Date.now()}`,
+    issue_id: issue.id,
+    status: issue.status,
+    title: 'Engineer Assigned · Pending Admin Approval',
+    description: `Supervisor ${data.supervisor_name} designated ${data.engineer_name} with instructions: "${issue.assignment_instructions}". Submitted for Central HQ approval.`,
+    actor: 'Municipal Authority',
+    actor_name: data.supervisor_name,
+    created_at: nowIso,
+  });
+
+  saveDatabase(db);
+  return attachRelations(issue, db);
+}
+
+// 2. Central Operations Dispatch (Admin) Approves or Rejects Assignment
+export function adminApproveAssignment(
+  issueId: string,
+  data: {
+    approved: boolean;
+    rejection_reason?: string;
+    admin_name?: string;
+  }
+): CivicIssue | null {
+  const db = loadDatabase();
+  const issue = db.issues.find(i => i.id === issueId || i.tracking_id === issueId);
+  if (!issue) return null;
+
+  const nowIso = new Date().toISOString();
+  issue.updated_at = nowIso;
+  issue.admin_reviewed_by = data.admin_name || 'Central Operations Dispatch';
+  issue.admin_reviewed_at = nowIso;
+
+  if (data.approved) {
+    issue.assignment_status = 'APPROVED';
+    issue.admin_approval_status = 'APPROVED';
+    issue.status = 'Assigned';
+    issue.task_status = 'ASSIGNED';
+
+    db.timeline.push({
+      id: `tl_${Date.now()}`,
+      issue_id: issue.id,
+      status: 'Assigned',
+      title: 'Assignment Approved by Central Operations HQ',
+      description: `HQ Dispatch approved assignment for ${issue.engineer_name}. Work order dispatched to engineer task queue.`,
+      actor: 'Municipal Authority',
+      actor_name: issue.admin_reviewed_by,
+      created_at: nowIso,
+    });
+  } else {
+    issue.assignment_status = 'REJECTED';
+    issue.admin_approval_status = 'REJECTED';
+    issue.admin_rejection_reason = data.rejection_reason || 'Assignment returned for review.';
+    issue.task_status = 'UNASSIGNED';
+
+    db.timeline.push({
+      id: `tl_${Date.now()}`,
+      issue_id: issue.id,
+      status: issue.status,
+      title: 'Assignment Rejected by Central Operations',
+      description: `HQ Dispatch rejected assignment. Reason: "${issue.admin_rejection_reason}". Reassigned back to supervisor.`,
+      actor: 'Municipal Authority',
+      actor_name: issue.admin_reviewed_by,
+      created_at: nowIso,
+    });
+  }
+
+  saveDatabase(db);
+  return attachRelations(issue, db);
+}
+
+// 3. Engineer Workflow Actions (ACCEPT, START_WORK, ADD_NOTE, SUBMIT_COMPLETION)
+export function engineerUpdateTask(
+  issueId: string,
+  data: {
+    action: 'ACCEPT' | 'START_WORK' | 'ADD_NOTE' | 'SUBMIT_COMPLETION';
+    engineer_id: string;
+    engineer_name: string;
+    note?: string;
+    before_image?: string;
+    after_image?: string;
+    resolution_note?: string;
+  }
+): CivicIssue | null {
+  const db = loadDatabase();
+  const issue = db.issues.find(i => i.id === issueId || i.tracking_id === issueId);
+  if (!issue) return null;
+
+  const nowIso = new Date().toISOString();
+  issue.updated_at = nowIso;
+
+  if (data.action === 'ACCEPT') {
+    issue.task_status = 'ACCEPTED';
+    issue.task_accepted_at = nowIso;
+
+    db.timeline.push({
+      id: `tl_${Date.now()}`,
+      issue_id: issue.id,
+      status: issue.status,
+      title: 'Task Accepted by Field Engineer',
+      description: `${data.engineer_name} accepted the work order. Crew preparation underway.`,
+      actor: 'Department Staff',
+      actor_name: data.engineer_name,
+      created_at: nowIso,
+    });
+  } else if (data.action === 'START_WORK') {
+    issue.task_status = 'IN_PROGRESS';
+    issue.status = 'In Progress';
+    issue.task_started_at = nowIso;
+
+    db.timeline.push({
+      id: `tl_${Date.now()}`,
+      issue_id: issue.id,
+      status: 'In Progress',
+      title: 'Field Work Started',
+      description: `On-site repair and restoration begun by ${data.engineer_name}. Equipment deployed.`,
+      actor: 'Department Staff',
+      actor_name: data.engineer_name,
+      created_at: nowIso,
+    });
+  } else if (data.action === 'ADD_NOTE') {
+    if (data.note) {
+      issue.work_notes = issue.work_notes
+        ? `${issue.work_notes}\n[${new Date().toLocaleTimeString()} - ${data.engineer_name}]: ${data.note}`
+        : `[${new Date().toLocaleTimeString()} - ${data.engineer_name}]: ${data.note}`;
+
+      db.timeline.push({
+        id: `tl_${Date.now()}`,
+        issue_id: issue.id,
+        status: issue.status,
+        title: 'Engineer Work Progress Logged',
+        description: `Note from ${data.engineer_name}: "${data.note}"`,
+        actor: 'Department Staff',
+        actor_name: data.engineer_name,
+        created_at: nowIso,
+      });
+    }
+  } else if (data.action === 'SUBMIT_COMPLETION') {
+    issue.task_status = 'COMPLETED';
+    issue.status = 'Resolution Submitted';
+    issue.task_completed_at = nowIso;
+    issue.verification_status = 'PENDING';
+
+    const proofIdx = db.resolution_proofs.findIndex(r => r.issue_id === issue.id);
+    const proof: ResolutionProof = {
+      id: proofIdx >= 0 ? db.resolution_proofs[proofIdx].id : `proof_${Date.now()}`,
+      issue_id: issue.id,
+      before_image: data.before_image || issue.evidence_url || '',
+      after_image: data.after_image || 'https://images.unsplash.com/photo-1541888946425-d0fbb18615f8?auto=format&fit=crop&w=800&q=80',
+      resolution_note: data.resolution_note || data.note || 'Work completed according to municipal engineering standards.',
+      submitted_by: data.engineer_name,
+      submitted_at: nowIso,
+    };
+
+    if (proofIdx >= 0) {
+      db.resolution_proofs[proofIdx] = proof;
+    } else {
+      db.resolution_proofs.push(proof);
+    }
+
+    db.timeline.push({
+      id: `tl_${Date.now()}`,
+      issue_id: issue.id,
+      status: 'Resolution Submitted',
+      title: 'Work Completed · Submitted for Supervisor Verification',
+      description: `${data.engineer_name} completed field repairs and uploaded before/after evidence proof. Awaiting supervisor audit.`,
+      actor: 'Department Staff',
+      actor_name: data.engineer_name,
+      created_at: nowIso,
+    });
+  }
+
+  saveDatabase(db);
+  return attachRelations(issue, db);
+}
+
+// 4. Supervisor Verifies Completed Work (VERIFY / REOPEN)
+export function supervisorVerifyTask(
+  issueId: string,
+  data: {
+    supervisor_id: string;
+    supervisor_name: string;
+    verified: boolean;
+    rejection_note?: string;
+  }
+): CivicIssue | null {
+  const db = loadDatabase();
+  const issue = db.issues.find(i => i.id === issueId || i.tracking_id === issueId);
+  if (!issue) return null;
+
+  const nowIso = new Date().toISOString();
+  issue.updated_at = nowIso;
+
+  if (data.verified) {
+    issue.task_status = 'VERIFIED';
+    issue.status = 'Resolved & Verified';
+    issue.verification_status = 'VERIFIED';
+    issue.verified_by = data.supervisor_name;
+    issue.verified_at = nowIso;
+    issue.is_overdue = false;
+
+    const proof = db.resolution_proofs.find(r => r.issue_id === issue.id);
+    if (proof) {
+      proof.verified_at = nowIso;
+    }
+
+    db.timeline.push({
+      id: `tl_${Date.now()}`,
+      issue_id: issue.id,
+      status: 'Resolved & Verified',
+      title: 'Supervisor Verified & Work Accepted',
+      description: `Supervisor ${data.supervisor_name} inspected and confirmed quality of work. Ticket marked RESOLVED.`,
+      actor: 'Municipal Authority',
+      actor_name: data.supervisor_name,
+      created_at: nowIso,
+    });
+  } else {
+    issue.task_status = 'REOPENED';
+    issue.status = 'REOPENED';
+    issue.verification_status = 'REOPENED';
+
+    const proof = db.resolution_proofs.find(r => r.issue_id === issue.id);
+    if (proof) {
+      proof.rejection_reason = data.rejection_note || 'Quality check failed. Further rectification required.';
+    }
+
+    db.timeline.push({
+      id: `tl_${Date.now()}`,
+      issue_id: issue.id,
+      status: 'REOPENED',
+      title: 'Supervisor Reopened Task (Rework Required)',
+      description: `Supervisor ${data.supervisor_name} noted deficiencies: "${data.rejection_note || 'Rework required'}". Reopened for engineer attention.`,
+      actor: 'Municipal Authority',
+      actor_name: data.supervisor_name,
+      created_at: nowIso,
+    });
+  }
+
+  saveDatabase(db);
+  return attachRelations(issue, db);
+}
+
 export function getAnalytics(): AnalyticsSummary {
   const db = loadDatabase();
   refreshIssueSlas(db);
@@ -737,6 +1020,20 @@ function getInitialSeed(): DatabaseSchema {
       affected_people: 6,
       department: 'Roads & Infrastructure',
       status: 'In Progress',
+      task_status: 'IN_PROGRESS',
+      assignment_status: 'APPROVED',
+      admin_approval_status: 'APPROVED',
+      admin_reviewed_by: 'Central Operations Dispatch',
+      supervisor_id: 'user_auth_2',
+      supervisor_name: 'Supervisor J. Khan',
+      assigned_by: 'Supervisor J. Khan',
+      engineer_id: 'user_auth_1',
+      engineer_name: 'Engineer R. Murthy',
+      assignment_instructions: 'Patch crater with industrial hot-mix asphalt and compact with 3-ton roller.',
+      assignment_date: new Date(now - 28 * H).toISOString(),
+      task_accepted_at: new Date(now - 26 * H).toISOString(),
+      task_started_at: new Date(now - 4 * H).toISOString(),
+      work_notes: 'Cold-mix applied temporarily; heavy compaction team on site.',
       sla_hours: 12,
       sla_deadline: new Date(now - 10 * H).toISOString(), // Overdue by 10 hours for testing!
       is_overdue: true,
@@ -772,6 +1069,18 @@ function getInitialSeed(): DatabaseSchema {
       affected_people: 4,
       department: 'Solid Waste Management',
       status: 'Resolution Submitted',
+      task_status: 'COMPLETED',
+      assignment_status: 'APPROVED',
+      admin_approval_status: 'APPROVED',
+      admin_reviewed_by: 'Central Operations Dispatch',
+      supervisor_id: 'user_auth_2',
+      supervisor_name: 'Supervisor J. Khan',
+      assigned_by: 'Supervisor J. Khan',
+      engineer_id: 'user_auth_1',
+      engineer_name: 'Engineer R. Murthy',
+      verification_status: 'PENDING',
+      assignment_instructions: 'Clear overflowing waste dumpster and sanitize area.',
+      task_completed_at: new Date(now - 2 * H).toISOString(),
       sla_hours: 24,
       sla_deadline: new Date(now + 4 * H).toISOString(),
       is_overdue: false,
@@ -874,8 +1183,19 @@ function getInitialSeed(): DatabaseSchema {
         'Open for 1 day (36h) (+6 pts)',
       ],
       affected_people: 2,
-      department: 'Stormwater Drainage',
-      status: 'Reported',
+      department: 'Roads & Infrastructure',
+      status: 'Assigned',
+      task_status: 'ASSIGNED',
+      assignment_status: 'APPROVED',
+      admin_approval_status: 'APPROVED',
+      admin_reviewed_by: 'Central Operations Dispatch',
+      supervisor_id: 'user_auth_2',
+      supervisor_name: 'Supervisor J. Khan',
+      assigned_by: 'Supervisor J. Khan',
+      engineer_id: 'user_auth_1',
+      engineer_name: 'Engineer R. Murthy',
+      assignment_instructions: 'Inspect drainage grate, remove solid silt blockage, and restore rainwater inflow.',
+      assignment_date: new Date(now - 6 * H).toISOString(),
       sla_hours: 48,
       sla_deadline: new Date(now + 12 * H).toISOString(),
       is_overdue: false,
@@ -884,7 +1204,7 @@ function getInitialSeed(): DatabaseSchema {
       ai_summary: 'Inlet grate blockage causing backwater pooling near healthcare facility.',
       ai_reasoning: 'Moderate localized flooding risk without immediate structural threat.',
       created_at: new Date(now - 36 * H).toISOString(),
-      updated_at: new Date(now - 36 * H).toISOString(),
+      updated_at: new Date(now - 6 * H).toISOString(),
     },
     {
       id: 'iss_seed_6',
@@ -910,6 +1230,9 @@ function getInitialSeed(): DatabaseSchema {
       affected_people: 4,
       department: 'Horticulture & Trees',
       status: 'Resolved & Verified',
+      task_status: 'VERIFIED',
+      verification_status: 'VERIFIED',
+      verified_by: 'Central Operations Dispatch',
       sla_hours: 24,
       sla_deadline: new Date(now - 4 * H).toISOString(),
       is_overdue: false,
@@ -919,6 +1242,83 @@ function getInitialSeed(): DatabaseSchema {
       ai_reasoning: 'Rapid clearance executed to restore traffic circulation and prevent wire damage.',
       created_at: new Date(now - 48 * H).toISOString(),
       updated_at: new Date(now - 8 * H).toISOString(),
+    },
+    {
+      id: 'iss_seed_7',
+      tracking_id: 'CIV-2026-00107',
+      category: 'Garbage / Waste',
+      title: 'Overloaded Secondary Dump Site near Bus Terminal',
+      description: 'Secondary collection container filled past capacity. Overflowing trash bags scattering onto traffic lane during morning commute.',
+      evidence_url: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80',
+      latitude: 12.9735,
+      longitude: 77.5985,
+      address: 'Central Terminal Road, Ward 85',
+      landmark: 'Bus Bay Platform 4',
+      severity: 'HIGH',
+      urgency: 'HIGH',
+      priority: 'HIGH',
+      priority_score: 70,
+      priority_reasons: [
+        'HIGH severity bio-waste (+30 pts)',
+        'HIGH urgency commute route (+20 pts)',
+        '5 community members reported (+15 pts)',
+      ],
+      affected_people: 5,
+      department: 'Solid Waste Management',
+      status: 'Reported',
+      assignment_status: 'PENDING_APPROVAL',
+      admin_approval_status: 'PENDING',
+      task_status: 'UNASSIGNED',
+      supervisor_id: 'user_auth_2',
+      supervisor_name: 'Supervisor J. Khan',
+      assigned_by: 'Supervisor J. Khan',
+      engineer_id: 'user_auth_1',
+      engineer_name: 'Engineer R. Murthy',
+      assignment_instructions: 'Deploy compacting tipper truck and spray liquid sanitizing solution.',
+      assignment_date: new Date(now - 1 * H).toISOString(),
+      sla_hours: 12,
+      sla_deadline: new Date(now + 11 * H).toISOString(),
+      is_overdue: false,
+      contact_name: 'Mahesh Reddy',
+      is_demo: true,
+      ai_summary: 'Commercial hub waste overflow requiring heavy equipment clearance.',
+      created_at: new Date(now - 2 * H).toISOString(),
+      updated_at: new Date(now - 1 * H).toISOString(),
+    },
+    {
+      id: 'iss_seed_8',
+      tracking_id: 'CIV-2026-00108',
+      category: 'Garbage / Waste',
+      title: 'Illegal Bulk Vegetable Waste Dumping behind City Market Arcade',
+      description: 'Rotting vegetable matter and wooden crates dumped along the service alley. Choking storm drains and creating rat infestation.',
+      evidence_url: 'https://images.unsplash.com/photo-1582408921715-18e7806365c1?auto=format&fit=crop&w=800&q=80',
+      latitude: 12.9682,
+      longitude: 77.5918,
+      address: 'Market Service Alley 2, Ward 85',
+      landmark: 'Rear Exit of Wholesale Market',
+      severity: 'HIGH',
+      urgency: 'HIGH',
+      priority: 'HIGH',
+      priority_score: 74,
+      priority_reasons: [
+        'HIGH severity organic hazard (+30 pts)',
+        'HIGH urgency pest infestation (+20 pts)',
+        '7 community members reported (+21 pts)',
+      ],
+      affected_people: 7,
+      department: 'Solid Waste Management',
+      status: 'Reported',
+      assignment_status: 'UNASSIGNED',
+      admin_approval_status: 'NONE',
+      task_status: 'UNASSIGNED',
+      sla_hours: 24,
+      sla_deadline: new Date(now + 20 * H).toISOString(),
+      is_overdue: false,
+      contact_name: 'Subramani K.',
+      is_demo: true,
+      ai_summary: 'Market alley biohazard dump requires immediate mechanical pickup.',
+      created_at: new Date(now - 4 * H).toISOString(),
+      updated_at: new Date(now - 4 * H).toISOString(),
     },
   ];
 
@@ -1082,6 +1482,6 @@ function getInitialSeed(): DatabaseSchema {
     timeline,
     supporting_reports,
     resolution_proofs,
-    last_ticket_number: 106,
+    last_ticket_number: 108,
   };
 }
