@@ -226,7 +226,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
           <div className="flex items-center space-x-2">
             <span className="font-bold text-slate-800">TechCity</span>
-            <span>· Unified Civic Issue Management</span>
+    
             <span className="text-slate-300">|</span>
             <span className={`text-[11px] px-2 py-0.5 rounded font-mono font-bold ${
               isAuthority ? 'bg-indigo-50 text-indigo-700' : 'bg-blue-50 text-blue-700'
