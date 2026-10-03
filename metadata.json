@@ -1,0 +1,6 @@
+{
+  "name": "TechCity - Unified Civic Issue Management",
+  "description": "Unified civic issue reporting, deterministic SLA prioritization, AI-assisted analysis, duplicate detection, and transparent resolution verification.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
