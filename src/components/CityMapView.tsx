@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { CivicIssue, PriorityLevel } from '../types/civic';
 import { getPriorityBadgeClass, getStatusBadgeClass } from '../utils/helpers';
+import { safeFetchJson } from '../utils/api';
 
 interface CityMapViewProps {
   onSelectIssue: (trackingId: string) => void;
@@ -40,10 +41,9 @@ export const CityMapView: React.FC<CityMapViewProps> = ({ onSelectIssue }) => {
   const fetchIssues = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/issues');
-      const data = await res.json();
-      if (data.success) {
-        setIssues(data.issues);
+      const res = await safeFetchJson<{ issues: CivicIssue[] }>('/api/issues');
+      if (res.success && res.data?.issues) {
+        setIssues(res.data.issues);
       }
     } catch (err) {
       console.error('Failed to load map issues:', err);

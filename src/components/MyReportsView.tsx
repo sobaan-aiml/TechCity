@@ -16,6 +16,7 @@ import {
 import { CivicIssue } from '../types/civic';
 import { User } from '../types/auth';
 import { formatDate, getPriorityBadgeClass, getStatusBadgeClass } from '../utils/helpers';
+import { safeFetchJson } from '../utils/api';
 
 interface MyReportsViewProps {
   user: User;
@@ -34,11 +35,10 @@ export const MyReportsView: React.FC<MyReportsViewProps> = ({
   const fetchMyIssues = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/issues');
-      const data = await res.json();
-      if (data.success) {
+      const res = await safeFetchJson<{ issues: CivicIssue[] }>('/api/issues');
+      if (res.success && res.data?.issues) {
         // Filter by user's email, name, or phone if present, or all citizen submitted tickets
-        const mySubmissions = data.issues.filter(
+        const mySubmissions = res.data.issues.filter(
           (i: CivicIssue) =>
             (i.contact_email && i.contact_email.toLowerCase() === user.email.toLowerCase()) ||
             (i.contact_name && i.contact_name.toLowerCase().includes(user.name.toLowerCase())) ||
@@ -48,7 +48,7 @@ export const MyReportsView: React.FC<MyReportsViewProps> = ({
         );
 
         // If none explicitly matched, show the active citizen issues so demo looks great
-        setIssues(mySubmissions.length > 0 ? mySubmissions : data.issues.slice(0, 3));
+        setIssues(mySubmissions.length > 0 ? mySubmissions : res.data.issues.slice(0, 3));
       }
     } catch (err) {
       console.error('Failed to load my issues:', err);

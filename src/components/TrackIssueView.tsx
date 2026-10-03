@@ -27,6 +27,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { CivicIssue, IssueStatus } from '../types/civic';
+import { safeFetchJson } from '../utils/api';
 import {
   formatDate,
   formatRelativeTime,
@@ -88,13 +89,12 @@ export const TrackIssueView: React.FC<TrackIssueViewProps> = ({
     setVerificationFeedback(null);
 
     try {
-      const res = await fetch(`/api/issues/${encodeURIComponent(trackingId.trim())}`);
-      const data = await res.json();
-      if (data.success && data.issue) {
-        setIssue(data.issue);
+      const res = await safeFetchJson<{ issue: CivicIssue }>(`/api/issues/${encodeURIComponent(trackingId.trim())}`);
+      if (res.success && res.data?.issue) {
+        setIssue(res.data.issue);
       } else {
         setIssue(null);
-        setErrorMessage(data.error || `No civic report found for "${trackingId}".`);
+        setErrorMessage(res.error || `No civic report found for "${trackingId}".`);
       }
     } catch (err: any) {
       setErrorMessage(err.message || 'Failed to fetch issue details. Please check connection.');
@@ -118,7 +118,7 @@ export const TrackIssueView: React.FC<TrackIssueViewProps> = ({
     if (!issue) return;
     try {
       setIsEndorsing(true);
-      const res = await fetch(`/api/issues/${issue.id}/me-too`, {
+      const res = await safeFetchJson<{ issue: CivicIssue }>(`/api/issues/${issue.id}/me-too`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -126,13 +126,12 @@ export const TrackIssueView: React.FC<TrackIssueViewProps> = ({
           note: endorseNote || 'Confirmed facing this problem in my neighborhood.',
         }),
       });
-      const data = await res.json();
-      if (data.success && data.issue) {
-        setIssue(data.issue);
+      if (res.success && res.data?.issue) {
+        setIssue(res.data.issue);
         setShowEndorseModal(false);
         setEndorseNote('');
       } else {
-        alert(data.error || 'Failed to record support');
+        alert(res.error || 'Failed to record support');
       }
     } catch (err: any) {
       alert(err.message || 'Network error');
@@ -146,7 +145,7 @@ export const TrackIssueView: React.FC<TrackIssueViewProps> = ({
     if (!issue) return;
     setIsVerifying(true);
     try {
-      const res = await fetch(`/api/issues/${issue.id}/verify-resolution`, {
+      const res = await safeFetchJson<{ issue: CivicIssue; message: string }>(`/api/issues/${issue.id}/verify-resolution`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -155,13 +154,12 @@ export const TrackIssueView: React.FC<TrackIssueViewProps> = ({
           citizen_name: issue.contact_name || 'Resident Citizen',
         }),
       });
-      const data = await res.json();
-      if (data.success && data.issue) {
-        setIssue(data.issue);
+      if (res.success && res.data?.issue) {
+        setIssue(res.data.issue);
         setShowReopenModal(false);
-        setVerificationFeedback(data.message);
+        setVerificationFeedback(res.data.message || 'Verification recorded successfully!');
       } else {
-        alert(data.error || 'Failed to submit verification');
+        alert(res.error || 'Failed to submit verification');
       }
     } catch (err: any) {
       alert(err.message || 'Network error submitting verification');

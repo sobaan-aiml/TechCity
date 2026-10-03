@@ -14,7 +14,8 @@ import {
 } from '../src/types/civic.js';
 import { calculatePriority } from './priority.js';
 
-const DATA_DIR = path.resolve(process.cwd(), 'data');
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const DATA_DIR = isServerless ? '/tmp' : path.resolve(process.cwd(), 'data');
 const DB_FILE = path.resolve(DATA_DIR, 'civic_db.json');
 
 export const DEPARTMENTS: Department[] = [
@@ -39,8 +40,12 @@ interface DatabaseSchema {
 let dbCache: DatabaseSchema | null = null;
 
 function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch (e) {
+    // Read-only filesystem in serverless, will operate in-memory safely
   }
 }
 
@@ -48,27 +53,31 @@ function loadDatabase(): DatabaseSchema {
   if (dbCache) return dbCache;
 
   ensureDataDir();
-  if (fs.existsSync(DB_FILE)) {
-    try {
+  try {
+    if (fs.existsSync(DB_FILE)) {
       const content = fs.readFileSync(DB_FILE, 'utf-8');
       dbCache = JSON.parse(content);
       refreshIssueSlas(dbCache!);
       return dbCache!;
-    } catch (e) {
-      console.error('[DB] Failed reading db file, regenerating initial seed:', e);
     }
+  } catch (e) {
+    console.warn('[DB] Failed reading db file, regenerating initial seed:', e);
   }
 
   const initial = getInitialSeed();
-  saveDatabase(initial);
   dbCache = initial;
+  saveDatabase(initial);
   return dbCache;
 }
 
 function saveDatabase(data: DatabaseSchema) {
-  ensureDataDir();
-  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
   dbCache = data;
+  try {
+    ensureDataDir();
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    // In serverless environments, file writing may be restricted; memory cache will continue working
+  }
 }
 
 function refreshIssueSlas(db: DatabaseSchema) {

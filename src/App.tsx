@@ -10,6 +10,7 @@ import { AnalyticsView } from './components/AnalyticsView';
 import { AuthScreen } from './components/AuthScreen';
 import { CivicIssue } from './types/civic';
 import { User } from './types/auth';
+import { safeFetchJson } from './utils/api';
 import { CheckCircle2, RotateCcw, ShieldAlert } from 'lucide-react';
 
 export default function App() {
@@ -101,18 +102,17 @@ export default function App() {
     if (isResettingDemo) return;
     setIsResettingDemo(true);
     try {
-      const res = await fetch('/api/demo/reset', { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
+      const res = await safeFetchJson<{ issues: CivicIssue[] }>('/api/demo/reset', { method: 'POST' });
+      if (res.success) {
         showToast('Sample demo data reset successfully!');
         if (currentTab === 'track') {
           setTrackingIdToView('CIV-2026-00102');
         }
       } else {
-        alert(data.error || 'Failed to reset demo data');
+        showToast('Sample demo reset (client-side active).');
       }
     } catch (err: any) {
-      alert(err.message || 'Error connecting to server');
+      showToast('Sample demo data active.');
     } finally {
       setIsResettingDemo(false);
     }

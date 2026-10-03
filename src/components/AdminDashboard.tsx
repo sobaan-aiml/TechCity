@@ -25,6 +25,7 @@ import {
   X,
 } from 'lucide-react';
 import { CivicIssue, Department, IssueCategory, IssueStatus, PriorityLevel } from '../types/civic';
+import { safeFetchJson } from '../utils/api';
 import {
   formatDate,
   formatRelativeTime,
@@ -83,17 +84,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       if (selectedDepartment !== 'ALL') params.append('department', selectedDepartment);
       if (searchQuery.trim()) params.append('search', searchQuery.trim());
 
-      const res = await fetch(`/api/issues?${params.toString()}`);
-      const data = await res.json();
-      if (data.success) {
-        setIssues(data.issues);
+      const res = await safeFetchJson<{ issues: CivicIssue[] }>(`/api/issues?${params.toString()}`);
+      if (res.success && res.data?.issues) {
+        setIssues(res.data.issues);
         // Refresh selected issue if open
         if (selectedIssue) {
-          const fresh = data.issues.find((i: CivicIssue) => i.id === selectedIssue.id);
+          const fresh = res.data.issues.find((i: CivicIssue) => i.id === selectedIssue.id);
           if (fresh) setSelectedIssue(fresh);
         }
       } else {
-        setErrorMessage(data.error || 'Failed to fetch issues');
+        setErrorMessage(res.error || 'Failed to fetch issues');
       }
     } catch (err: any) {
       setErrorMessage(err.message || 'Network error fetching issues');
@@ -120,7 +120,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (!selectedIssue || !assignedDept) return;
     setIsUpdating(true);
     try {
-      const res = await fetch(`/api/issues/${selectedIssue.id}/assign`, {
+      const res = await safeFetchJson<{ issue: CivicIssue }>(`/api/issues/${selectedIssue.id}/assign`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -128,12 +128,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           actor_name: authorName,
         }),
       });
-      const data = await res.json();
-      if (data.success) {
-        setSelectedIssue(data.issue);
+      if (res.success && res.data?.issue) {
+        setSelectedIssue(res.data.issue);
         fetchIssues();
       } else {
-        alert(data.error || 'Failed to assign department');
+        alert(res.error || 'Failed to assign department');
       }
     } catch (err: any) {
       alert(err.message);
@@ -147,7 +146,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (!selectedIssue || !newStatus) return;
     setIsUpdating(true);
     try {
-      const res = await fetch(`/api/issues/${selectedIssue.id}/status`, {
+      const res = await safeFetchJson<{ issue: CivicIssue }>(`/api/issues/${selectedIssue.id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -157,13 +156,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           actor_name: authorName,
         }),
       });
-      const data = await res.json();
-      if (data.success) {
-        setSelectedIssue(data.issue);
+      if (res.success && res.data?.issue) {
+        setSelectedIssue(res.data.issue);
         setStatusNote('');
         fetchIssues();
       } else {
-        alert(data.error || 'Failed to update status');
+        alert(res.error || 'Failed to update status');
       }
     } catch (err: any) {
       alert(err.message);
@@ -177,7 +175,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (!selectedIssue || !internalNoteText.trim()) return;
     setIsUpdating(true);
     try {
-      const res = await fetch(`/api/issues/${selectedIssue.id}/internal-notes`, {
+      const res = await safeFetchJson<{ issue: CivicIssue }>(`/api/issues/${selectedIssue.id}/internal-notes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -185,13 +183,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           author: authorName,
         }),
       });
-      const data = await res.json();
-      if (data.success) {
-        setSelectedIssue(data.issue);
+      if (res.success && res.data?.issue) {
+        setSelectedIssue(res.data.issue);
         setInternalNoteText('');
         fetchIssues();
       } else {
-        alert(data.error || 'Failed to add internal note');
+        alert(res.error || 'Failed to add internal note');
       }
     } catch (err: any) {
       alert(err.message);
@@ -208,7 +205,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
     setIsUpdating(true);
     try {
-      const res = await fetch(`/api/issues/${selectedIssue.id}/submit-resolution`, {
+      const res = await safeFetchJson<{ issue: CivicIssue }>(`/api/issues/${selectedIssue.id}/submit-resolution`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -218,14 +215,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           submitted_by: submittedBy,
         }),
       });
-      const data = await res.json();
-      if (data.success) {
-        setSelectedIssue(data.issue);
+      if (res.success && res.data?.issue) {
+        setSelectedIssue(res.data.issue);
         setShowResolutionModal(false);
         setResolutionNote('');
         fetchIssues();
       } else {
-        alert(data.error || 'Failed to submit resolution proof');
+        alert(res.error || 'Failed to submit resolution proof');
       }
     } catch (err: any) {
       alert(err.message);
